@@ -1,0 +1,9 @@
+Contact Form
+ [x] Empty name returns error
+ [x] Empty email returns error
+ [x] Invalid email returns error
+ [x] Empty message returns error
+ [x] Valid input returns no errors
+ [x] Whitespace only name returns error
+ [x] Whitespace only message returns error
+
