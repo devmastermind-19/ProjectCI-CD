@@ -1,0 +1,10 @@
+parameters:
+    level: 5
+    paths:
+        - includes
+        - index.php
+        - thankyou.php
+        - admin.php
+        - setup.php
+    excludePaths:
+        - vendor

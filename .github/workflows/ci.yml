@@ -1,0 +1,105 @@
+name: QuickPOS CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+      - 'feature/**'
+      - 'bugfix/**'
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  commit-validation:
+    name: Jira Commit Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check Commit Message for Jira ID
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          echo "Commit Message: $COMMIT_MSG"
+          # Allow if it has a Jira ID OR if it is an automatic merge commit
+          if [[ ! "$COMMIT_MSG" =~ \[POS-[0-9]+\] ]] && [[ ! "$COMMIT_MSG" =~ ^Merge ]]; then
+            echo "Error: Commit message does not contain a valid Jira ID (e.g., [POS-101])."
+            exit 1
+          fi
+
+  code-quality:
+    name: Code Quality (PHPStan)
+    runs-on: ubuntu-latest
+    needs: commit-validation
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: phpstan, composer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Syntax Check
+        run: |
+          php -l includes/validation.php
+          php -l includes/db.php
+          php -l thankyou.php
+          php -l index.php
+
+      - name: Code Quality Check (PHPStan)
+        run: vendor/bin/phpstan analyse includes/ --level=5
+
+  testing:
+    name: Automated Testing (PHPUnit)
+    runs-on: ubuntu-latest
+    needs: commit-validation
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo_mysql, sqlite3, pdo_sqlite
+          tools: phpunit, composer
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Automated Testing (PHPUnit)
+        run: vendor/bin/phpunit tests/
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quickpos-build
+          path: .
+
+  deployment:
+    name: Continuous Deployment (CD)
+    runs-on: ubuntu-latest
+    needs: [code-quality, testing]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Production (Simulated)
+        run: |
+          echo "🚀 Starting Deployment to Production Server..."
+          echo "Connecting to remote server..."
+          # In a real scenario, you would use SSH or FTP here:
+          # ssh user@server "cd /var/www/html && git pull origin main"
+          echo "Successfully deployed latest build to Production!"
+
+      - name: Notify Deployment Success
+        run: echo "Deployment of version ${{ github.sha }} was successful."
