@@ -2,6 +2,8 @@
 
 Modern Point of Sale (POS) Landing Page with Full Stack Integration and CI/CD Pipeline.
 
+Website Link : http://quickpos.scienceontheweb.net/
+
 ## 📋 Project Overview
 QuickPOS is a professional, responsive landing page for a POS system. It features a modern, SaaS-style UI built with HTML/CSS/JS and a secure PHP/MySQL backend for contact form handling. Developed using Software Project Management (SPM) best practices including GitFlow, automated testing, and CI/CD.
 
