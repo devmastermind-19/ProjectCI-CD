@@ -1,7 +1,5 @@
 # QuickPOS ⚡
 
-[![QuickPOS CI/CD Pipeline](https://github.com/yourusername/quickpos/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/quickpos/actions/workflows/ci.yml)
-
 Modern Point of Sale (POS) Landing Page with Full Stack Integration and CI/CD Pipeline.
 
 ## 📋 Project Overview
@@ -98,7 +96,7 @@ Our GitHub Actions pipeline (`.github/workflows/ci.yml`) automates quality assur
 7. **PR Blocking:** Pull Requests are blocked from merging if any CI checks fail, ensuring zero-defect code in `main`.
 
 ## 📸 Screenshots
-*(Add screenshots of your landing page, CI/CD pipeline success, and PRs here)*
 
----
+<img width="958" height="436" alt="image" src="https://github.com/user-attachments/assets/7ba5fc1d-377c-4ff0-b6eb-dba20f285a4b" />
+
 *Developed for SPM Semester Project.*
